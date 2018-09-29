@@ -1,0 +1,177 @@
+create external table country (
+c_name string,
+landmass tinyint,
+zone tinyint,
+area int,
+pop smallint,
+lang tinyint,
+rel tinyint,
+bars tinyint,
+strip tinyint,
+colors tinyint,
+red tinyint,
+greean tinyint,
+blue tinyint,
+gold tinyint,
+white tinyint,
+black tinyint,
+orange tinyint,
+mainh string,
+circle tinyint,
+crosses tinyint,
+sal  tinyint,
+quar tinyint,
+sun_s tinyint,
+cres tinyint,
+tri tinyint,
+icon tinyint,
+animate tinyint,
+text tinyint,
+topleft string,
+botright string
+)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/hive_ex/country';
+
+load data local inpath '/home/ankita/flag.txt'
+overwrite into table country;
+
+1)
+select count(c_name) as cnt, landmass from country group by landmass;
+31	1
+17	2
+35	3
+52	4
+39	5
+20	6
+
+
+2)
+select (bars + strip) as cnt, c_name from country
+order by cnt Desc
+limit 5;
+
+14	Malaysia
+13	USA
+11	Liberia
+9	Uruguay
+9	Greece
+
+
+3)
+select count(c_name) from country
+where icon = 1;
+49
+
+4)
+select count(c_name) from country
+where topleft = botright;
+76
+
+5)
+select count(c_name), zone
+from country
+group by zone;
+91	1
+29	2
+16	3
+58	4
+
+6)
+select c_name from country where area in 
+(select max(area) from country)
+and zone=1;
+
+USSR
+
+7)
+select c_name from country where pop in 
+(select min(pop) from country
+where landmass=2);
+
+American-Samoa
+Andorra
+Anguilla
+Antigua-Barbuda
+Bahamas
+Bahrain
+Barbados
+Belize
+Bermuda
+British-Virgin-Isles
+Brunei
+Cape-Verde-Islands
+Cayman-Islands
+Comorro-Islands
+Cook-Islands
+Djibouti
+Dominica
+Equatorial-Guinea
+Faeroes
+Falklands-Malvinas
+French-Guiana
+French-Polynesia
+Gibraltar
+Greenland
+Grenada
+Guam
+Iceland
+Kiribati
+Liechtenstein
+Luxembourg
+Maldive-Islands
+Malta
+Marianas
+Micronesia
+Monaco
+Montserrat
+Nauru
+Netherlands-Antilles
+Niue
+Qatar
+San-Marino
+Sao-Tome
+Seychelles
+Soloman-Islands
+St-Helena
+St-Kitts-Nevis
+St-Lucia
+St-Vincent
+Surinam
+Tonga
+Turks-Cocos-Islands
+Tuvalu
+US-Virgin-Isles
+Vanuatu
+Vatican-City
+Western-Samoa
+
+
+
+8)
+select count(c_name) as cnt, lang from country
+group by lang
+order by cnt Desc
+limit 1;
+46	10
+
+9)
+select count(mainh) as cnt, mainh from country
+group by mainh
+order by cnt Desc
+limit 1;
+71	red
+
+10)
+select sum(circle) as sum_circ from country;
+33
+
+11)
+select count(c_name) from country
+where text = 1 
+and icon = 1;
+
+13
+

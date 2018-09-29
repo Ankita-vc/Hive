@@ -1,0 +1,75 @@
+create external table y_tube(
+id varchar(11),
+uploader string,
+interval_t int,
+category string,
+len_v int,
+n_views int,
+rating float,
+n_rating int,
+n_comment int,
+rel array<string>
+)
+row format delimited 
+fields terminated by '\t'
+collection items terminated by ' '
+stored as textfile
+location '/user/';
+
+load data local inpath '/home/ankita/youtubedata.txt'
+overwrite into table y_tube;
+
+1)
+select category,count(id) as cnt from y_tube
+group by category
+order by cnt Desc
+limit 5;
+
+Entertainment	908
+Music	862
+Comedy	414
+People & Blogs	398
+News & Politics	333
+Time taken: 48.644 seconds, Fetched: 5 row(s)
+
+2)
+//**
+select id from y_tube
+order by n_rating Desc
+limit 10;
+
+kHmvkRoEowc
+EwTZ2xpQwpA
+rZBA0SKmQy8
+4DC4Rb9quKk
+LU8DDYz68kM
+Qit3ALTelOo
+irp8CNj9qBI
+3QL97xldoXc
+LTxO_pgMqys
+Md6rURKhZmA
+**//
+
+select id,rating from y_tube
+order by rating desc
+limit 10;
+geUY_esOrt0	5.0
+osqnkdc349s	5.0
+wzUyV42Izz4	5.0
+dh6dF1XY3uI	5.0
+L3mR8syHNIg	5.0
+YZev1imoxX8	5.0
+gP0jnBrVEpI	5.0
+Y_hAXbgxXp8	5.0
+lD3GuCoJxT4	5.0
+3TYqkBJ9YRk	5.0
+
+3)
+
+select id, n_views from y_tube
+order by n_views Desc
+limit 1;
+
+12Z3J1uzd0Q	65341925
+Time taken: 20.142 seconds, Fetched: 1 row(s)
+

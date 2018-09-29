@@ -1,0 +1,170 @@
+create database stack_f;
+
+use stack_f;
+
+create table comment
+(
+id bigint,
+userid bigint)
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+
+load data local inpath '/home/ankita/comments.csv'
+overwrite into table comment;
+
+
+
+create table posts(
+id bigint,
+post_t int,
+create_d timestamp,
+score int,
+v_cnt bigint,
+o_userid bigint,
+title string,
+a_cnt int,
+c_cnt int)
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+
+load data local inpath '/home/ankita/posts.csv'
+overwrite into table posts;
+
+create table post_t(
+id int,
+name string)
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+
+load data local inpath '/home/ankita/posttypes.csv'
+overwrite into table post_t;
+
+
+create table users(
+id bigint,
+rep int,
+disp_n string,
+loc string,
+age int)
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+
+load data local inpath '/home/ankita/users.csv'
+overwrite into table users;
+
+1)
+select u.disp_n,count(p.id) from users as u join posts as p on u.id = p.o_userid where u.rep in(select rep from users order by rep desc limit 1) group by disp_n;
+Jon Skeet	1
+
+2) 
+
+select avg(age) from users;
+35.263352397712275
+Time taken: 20.623 seconds, Fetched: 1 row(s)
+
+3) 
+
+select disp_n from users where id in (
+select o_userid from posts
+where create_d in (
+select min(create_d) from posts)
+);
+
+Eggs McLaren
+
+4)
+select u.disp_n,count(p.c_cnt) from users as u join posts as p on u.id = p.o_userid where u.rep in(select rep from users order by rep desc limit 1) group by disp_n;
+
+Jon Skeet	0
+
+5)E) 1.
+create view pos
+as select count(id) as cnt, o_userid 
+from posts
+group by o_userid
+order by cnt Desc
+limit 1;
+select users.disp_n from users inner join pos
+on pos.o_userid = users.id
+
+o/p: aku
+
+
+
+6)E)2.
+create view max_comment as
+select count(id) as cnt, userid
+from comment
+group by userid
+order by cnt Desc
+limit 1;
+select u.disp_n from users as u
+inner join comment as c 
+on u.id =c.userid
+where c.userid in (select userid from max_comment)
+limit 1;
+**Jon skeet** 
+
+7)f) 
+select disp_n from users where id in (
+select o_userid from posts where
+v_cnt in (
+select max(v_cnt) from posts)
+);
+Shadow_x99
+
+
+8)G)
+1)
+select p.title,u.disp_n from posts as p inner join
+users as u on p.o_userid=u.id where p.o_userid in(
+select o_userid from posts where a_cnt in( 
+select max(a_cnt) from posts))
+limit 1
+;
+How to select the nth row in a SQL database table?	Charles Roper
+
+2)
+select p.title,u.disp_n from posts as p inner join
+users as u on p.o_userid=u.id where p.o_userid in(
+select o_userid from posts where c_cnt in( 
+select max(c_cnt) from posts))
+limit 1
+;
+
+How do you express binary literals in Python?	Justin Standard
+
+9)
+H)
+
+create view max_u as 
+select count(id) as cnt,loc
+from users
+group by loc
+having loc != ''
+order by cnt Desc
+limit 1
+;
+select loc from max_u;
+United states
+
+10)
+I)
+
+create view ind_u as
+select id, loc from users where 
+loc like '%India%' ;
+
+select count(a_cnt) as answer_c, count(c_cnt) as comment_c, count(id) as post_c from posts
+where o_userid in
+(select id from ind_u);
+
+203	210	726
